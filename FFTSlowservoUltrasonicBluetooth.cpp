@@ -1,3 +1,5 @@
+
+
 #include <arduinoFFT.h>
 #include "Ultrasonic.h"
 #include <M5Stack.h>
@@ -82,8 +84,6 @@ void setup() {
   Serial.begin(115200);
   pinMode(MIC, INPUT);
   servo.setup();
-  M5.begin();
-  bts.begin("MSR IoT Device");
 }
 
 // マイクのサンプルをゲットするよ♪
@@ -126,7 +126,7 @@ int findStrongestFrequency(int nsamples, double threshold) {
   return (maxIndex * SAMPLING_FREQUENCY) / fftsamples;
 }
 
-
+// ここからが、可愛いギャルの仕草♪
 
 void rotateServoSlowly(int start, int end, int step, int delayTime) {
   unsigned long startTime = millis();
@@ -134,8 +134,8 @@ void rotateServoSlowly(int start, int end, int step, int delayTime) {
   for (int i = start; i <= end; i += step) {
     ledcWrite(servo.pwmChannel, i);
     nonBlockingDelay(delayTime);
-  servo.stopRotation();
   }
+  servo.stopRotation(); // あーん、ストップしちゃうの♪
 }
 
 // ループループ♪
@@ -153,11 +153,10 @@ void loop() {
 
   // 一番強い周波数成分を見つけるよ♪
   int strongestFrequency = findStrongestFrequency(fftsamples / 2, threshold);
-  //Serial.println(strongestFrequency);
+  Serial.println(strongestFrequency);
 
   int RangeInCentimeters = ultrasonic.MeasureInCentimeters();
-   //Serial.print(RangeInCentimeters);//0~400cm
-   bts.println(RangeInCentimeters, strongestFrequency);
+  Serial.print(RangeInCentimeters); // 0~400cm
 
   // 検出された周波数が指定範囲にあって、回転がオフなら、回転をスタートするよ♪
   if (strongestFrequency >= 400 && strongestFrequency <= 600 && !rotateEnabled) {
@@ -171,9 +170,9 @@ void loop() {
     rotateEnabled = false;
   }
 
-  if (RangeInCentimeters <= 100){
+  if (RangeInCentimeters <= 100) {
     rotateServoSlowly(1000, 2000, servo.rotationSpeed, 10);
 
+    // わーい、ちょっと早く回しちゃった♪
   }
 }
-
