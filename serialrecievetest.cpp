@@ -6,17 +6,22 @@ void setup() {
 }
 
 void loop() {
-  // シリアルデータを受信する
-  if (Serial.available() > 0) {
-    // 受信したデータを読み込む
-    char receivedChar = Serial.read();
+  if (Serial.available()) {
+    // 改行文字 (0x0a) までのテキストを受信
+    String text = Serial.readStringUntil(0x0a);
 
-    // アスキーコードから文字に変換
-    char decodedChar = char(receivedChar);
-     M5.Lcd.clear(); // 画面をクリアして最新の値のみ表示
+    if (text.length() > 0 && text.startsWith("*")) {
+      text.trim();
+      text.replace("*", "");
 
-    // 画面に受信したデータを表示する
-    M5.Lcd.printf("Received: %c (ASCII: %d)\n", decodedChar, receivedChar);
+      // 画面をクリア
+      M5.Lcd.clear();
+
+      // 大きなフォントサイズでテキストを表示
+      M5.Lcd.setTextSize(3);
+      M5.Lcd.setCursor(10, 50);
+      M5.Lcd.print(text);
+    }
   }
 
   // 他の処理を追加する場合はここに記述する
