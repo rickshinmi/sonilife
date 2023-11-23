@@ -10,7 +10,7 @@ Servo servo1;
 #define servoPin 2
 #define DC_MOTERPIN 5
 #define MIC_PIN 36
-
+dd
 
 double vReal[FFT_SAMPLES];
 double vImag[FFT_SAMPLES];
@@ -107,6 +107,7 @@ void loop() {
     {
       int receivedChar = Serial.read();
       M5.Lcd.println(receivedChar);
+      map(receivedChar,0,255,0,90);
       servo1.write(receivedChar);
       // 一個前の値と最新の値の差を計算して変数に格納する。
       int diff = receivedChar - previousValue;
