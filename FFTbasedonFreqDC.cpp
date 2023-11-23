@@ -11,6 +11,7 @@ Servo servo1;
 #define DC_MOTERPIN 5
 #define MIC_PIN 36
 
+
 double vReal[FFT_SAMPLES];
 double vImag[FFT_SAMPLES];
 arduinoFFT FFT = arduinoFFT(vReal, vImag, FFT_SAMPLES, SAMPLING_FREQUENCY);
@@ -104,9 +105,9 @@ void loop() {
   {
     while (Serial.available() > 0) 
     {
+      nonBlockingDelay(1000);  
       int receivedChar = Serial.read();
       M5.Lcd.println(receivedChar);
-      map(receivedChar,0,255,0,90);
       servo1.write(receivedChar);
       // 一個前の値と最新の値の差を計算して変数に格納する。
       int diff = receivedChar - previousValue;
@@ -115,6 +116,7 @@ void loop() {
       // 0から10の範囲の値を100から255の範囲にマッピング
       int mappedDiff = map(diff, 0, 10, 100, 255);
       // DCモーターにマッピングされた値を適用
+      nonBlockingDelay(1000);  
       DCmoter(mappedDiff);
     }
   }
