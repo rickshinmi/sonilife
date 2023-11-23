@@ -10,7 +10,6 @@ Servo servo1;
 #define servoPin 2
 #define DC_MOTERPIN 5
 #define MIC_PIN 36
-dd
 
 double vReal[FFT_SAMPLES];
 double vImag[FFT_SAMPLES];
