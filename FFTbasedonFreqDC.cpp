@@ -3,12 +3,13 @@
 #include <ESP32Servo.h>
 
 Servo servo1;
-
-#define MIC_PIN 36 // Assuming the microphone is connected to pin 0
 #define FFT_SAMPLES 2048
 #define SAMPLING_FREQUENCY 10000
 #define MIN_FREQUENCY 400
 #define MAX_FREQUENCY 1000
+#define servoPin 2
+#define DC_MOTERPIN 5
+#define MIC_PIN 36
 
 
 double vReal[FFT_SAMPLES];
@@ -19,13 +20,13 @@ double threshold = 1;  // Adjust the threshold as needed
 bool rotateEnabled = false;
 
 unsigned long previousMillis = 0;
+
 void nonBlockingDelay(unsigned long interval) {
   unsigned long currentMillis = millis();
   if (currentMillis - previousMillis >= interval) {
     previousMillis = currentMillis;
   }
 }
-
 
 void sample(int nsamples) {
   for (int i = 0; i < nsamples; i++) {
@@ -49,7 +50,7 @@ void DCRemoval2(double *vData, uint16_t samples) {
 }
 
 void DCmoter(int speed){
-  analogWrite(5, speed);
+  analogWrite(DC_MOTERPIN, speed);
 }
 
 
@@ -58,10 +59,8 @@ void setup() {
   M5.begin();
   Serial.begin(115200);
   pinMode(MIC_PIN, INPUT);
-  servo1.attach(2, 500, 2400); // サーボのピンと制限パルス幅を指定
+  servo1.attach(servoPin, 500, 2400); // サーボのピンと制限パルス幅を指定
 }
-
-// loop 関数内で rotateEnabled を宣言する必要はありません
 
 void loop() {
   sample(FFT_SAMPLES);
@@ -109,15 +108,12 @@ void loop() {
       int receivedChar = Serial.read();
       M5.Lcd.println(receivedChar);
       servo1.write(receivedChar);
-        
       // 一個前の値と最新の値の差を計算して変数に格納する。
       int diff = receivedChar - previousValue;
       // 今回の値を前回の値として保存
       previousValue = receivedChar;
-
       // 0から10の範囲の値を100から255の範囲にマッピング
       int mappedDiff = map(diff, 0, 10, 100, 255);
-
       // DCモーターにマッピングされた値を適用
       DCmoter(mappedDiff);
     }
