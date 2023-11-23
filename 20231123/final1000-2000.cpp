@@ -7,8 +7,8 @@ Ultrasonic ultrasonic(22);
 Servo servo1;
 #define FFT_SAMPLES 2048
 #define SAMPLING_FREQUENCY 10000
-#define MIN_FREQUENCY 400
-#define MAX_FREQUENCY 1000
+#define MIN_FREQUENCY 1000
+#define MAX_FREQUENCY 2000
 #define servoPin 2
 #define DC_MOTERPIN 5
 #define MIC_PIN 36
